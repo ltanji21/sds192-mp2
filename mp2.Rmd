@@ -8,8 +8,6 @@ output: html_document
 
 ## Loading the data
 
-<<<<<<< HEAD
-=======
 This project is so interesting and relevant to my life!
 
 I hope we can make this work
