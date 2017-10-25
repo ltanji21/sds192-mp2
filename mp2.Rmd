@@ -1,6 +1,6 @@
 ---
 title: "Mini-Project 2"
-author: "Your Name Here"
+author: "Leigh Tanji & Samantha Linder"
 date: "October 31, 2017"
 output: html_document
 ---
@@ -16,3 +16,11 @@ load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
 ```
+
+Hellow World!
+
+
+
+
+
+
