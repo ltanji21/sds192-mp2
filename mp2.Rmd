@@ -8,10 +8,13 @@ output: html_document
 
 ## Loading the data
 
+<<<<<<< HEAD
+=======
 This project is so interesting and relevant to my life!
 
 I hope we can make this work
 
+>>>>>>> 88b9ae9dda3e5db8b100c34ac26bccfcc4f30449
 ```{r, include=FALSE}
 load("house_elections.rda")
 load("candidates.rda")
@@ -19,7 +22,58 @@ load("committees.rda")
 load("contributions.rda")
 ```
 
-Hellow World!
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+
+```
+
+ 
+```{r}
+donors_per_state <- individuals %>%
+  group_by(state) %>%
+  summarise(people_no = sum(n())) %>%
+  filter(people_no >= 50, state != "ZZ") %>%
+  select(state, people_no)
+
+dim(donors_per_state)
+donors_per_state
+```
+  
+
+Avg. Yoga Instructor donations by state.
+```{r}
+  mutate(no_donors = transaction_amt)%>% select(contains("YOGA"), average_mon, state)
+
+head(Occupations)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
