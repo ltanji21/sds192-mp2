@@ -23,36 +23,119 @@ load("contributions.rda")
 ```{r}
 library(dplyr)
 library(ggplot2)
+library(maps)
+library(fiftystater)
+library(mapproj)
 ```
 
-```{r}
-
-```
-
- 
+Donors per state.
 ```{r}
 donors_per_state <- individuals %>%
   group_by(state) %>%
-  summarise(people_no = sum(n())) %>%
-  filter(people_no >= 50, state != "ZZ") %>%
-  select(state, people_no)
+  summarise(donor_no = sum(n())) %>%
+  filter(donor_no >= 50, state != "ZZ") %>%
+  select(state, donor_no)
 
 dim(donors_per_state)
 donors_per_state
 ```
-  
 
-Avg. Yoga Instructor donations by state.
+Number of donors in particular occupation
 ```{r}
-  mutate(no_donors = transaction_amt)%>% select(contains("YOGA"), average_mon, state)
-
-head(Occupations)
+occupations_people <- individuals %>%
+  group_by(state) %>%
+  summarise(people_no = n()) %>%
+  filter(people_no >= 50, state != "ZZ") %>%
+  select(contains("YOGA"), state, people_no)
+  
+occupations_people
 ```
 
 
+total Yoga Instructor donations by state.
+```{r}
+occupations_donation <- individuals %>%
+  group_by(state) %>%
+  summarise(total_donation = sum(transaction_amt)) %>%
+  filter(total_donation > 1000, !is.na(state)) %>%
+  select(contains("YOGA"), state, total_donation)
+
+occupations_donation
+```
+
+Joining the tables 'occupations_people' and `occupations_donation' and table was mutated table to get the average sum of money per person in that state in a specific occupation.
+```{r}
+donations_occupation <- occupations_people %>%
+  left_join(occupations_donation, by = "state") %>%
+  mutate(average_donation = total_donation/people_no) %>%
+  select(state, average_donation)
+
+donations_occupation
+```
+
+Testing out Map
+```{r}
+donations_occupation <- data.frame(state = tolower(rownames(individuals)), individuals)
+```
+
+```{r}
+yoga_map <- ggplot(donations_occupation, aes(map_id = state)) + 
+  geom_map(aes(fill = average_donation), map = fifty_states) +
+  expand_limits(x = fifty_states$long, y = fifty_states$lat) +
+  coord_map() +
+  scale_x_continuous(breaks = NULL) +
+  scale_y_continuous(breaks = NULL) +
+  labs(x = "", y = "") +
+  theme(legend.position = "bottom", panel.background = element_blank()) +
+  fifty_states_inset_boxes()
+
+yoga_map
+
+```
+
+Make everything into a function! Start with 'occupations_people'. 
+```{r}
+job_names <- c("YOGA")
+
+occupations_people <- function(job_arg) {
+  individuals %>%
+  group_by(state) %>%
+  summarise(people_no = n()) %>%
+  filter(people_no >= 50, state != "ZZ") %>%
+  select(contains(job_arg), state, people_no)
+}
+  
+lapply(job_names, FUN = occupations_people)
+```
 
 
+Making 'occupations_donation' into a function. 
+```{r}
+occupations_donation <- function(job_arg) {
+  individuals %>%
+  group_by(state) %>%
+  summarise(total_donation = sum(transaction_amt)) %>%
+  filter(total_donation > 1000, !is.na(state)) %>%
+  select(contains(job_arg), state, total_donation)
+}
 
+lapply(job_names, FUN = occupations_donation)
+
+occupations_donation
+```
+
+
+Now making 'donations_occupation' into a function. 
+```{r}
+donations_occupation <- function() {
+  occupations_people %>%
+  left_join(occupations_donation, by = "state") %>%
+  mutate(average_donation = total_donation/people_no) %>%
+  select(state, average_donation)
+}
+
+donations_occupation
+```
 
 
 
