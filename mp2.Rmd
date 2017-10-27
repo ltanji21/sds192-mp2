@@ -95,7 +95,7 @@ yoga_map
 
 Make everything into a function! Start with 'occupations_people'. 
 ```{r}
-job_names <- c("YOGA")
+job_names <- c("YOGA", "SOCIAL WORKER", "DOCTOR", "PHYSICIAN", "LAWYER", "ATTORNEY")
 
 occupations_people <- function(job_arg) {
   individuals %>%
@@ -135,6 +135,8 @@ donations_occupation <- function() {
 }
 
 donations_occupation
+
+
 ```
 
 
