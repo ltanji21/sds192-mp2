@@ -95,9 +95,9 @@ yoga_map
 
 Make everything into a function! Start with 'occupations_people'. 
 ```{r}
-job_names <- c("YOGA", "SOCIAL WORKER", "DOCTOR", "PHYSICIAN", "LAWYER", "ATTORNEY")
+job_names2 <- c("YOGA", "SOCIAL WORKER", "DOCTOR", "PHYSICIAN", "LAWYER", "ATTORNEY")
 
-occupations_people <- function(job_arg) {
+occupations_people2 <- function(job_arg) {
   individuals %>%
   group_by(state) %>%
   summarise(people_no = n()) %>%
@@ -105,37 +105,36 @@ occupations_people <- function(job_arg) {
   select(contains(job_arg), state, people_no)
 }
   
-lapply(job_names, FUN = occupations_people)
+lapply(job_names2, FUN = occupations_people2)
 ```
 
 
 Making 'occupations_donation' into a function. 
 ```{r}
-occupations_donation <- function(job_arg) {
+occupations_donation2 <- function(job_arg) {
   individuals %>%
   group_by(state) %>%
-  summarise(total_donation = sum(transaction_amt)) %>%
-  filter(total_donation > 1000, !is.na(state)) %>%
-  select(contains(job_arg), state, total_donation)
+  summarise(total_donation2 = sum(transaction_amt)) %>%
+  filter(total_donation2 > 1000, !is.na(state)) %>%
+  select(contains(job_arg), state, total_donation2)
 }
 
-lapply(job_names, FUN = occupations_donation)
+lapply(job_names2, FUN = occupations_donation2)
 
-occupations_donation
+occupations_donation2
 ```
 
 
 Now making 'donations_occupation' into a function. 
 ```{r}
-donations_occupation <- function() {
+donations_occupation2 <- function() {
   occupations_people %>%
-  left_join(occupations_donation, by = "state") %>%
-  mutate(average_donation = total_donation/people_no) %>%
-  select(state, average_donation)
+  left_join(occupations_donation2, by = "state") %>%
+  mutate(average_donation2 = total_donation/people_no) %>%
+  select(state, average_donation2)
 }
 
 donations_occupation
-
 
 ```
 
