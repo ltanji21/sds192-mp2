@@ -113,6 +113,8 @@ percentage_dem <- total_dem %>%
   left_join(win_dem, by = "state") %>%
   mutate(percentage = winners*100/N) %>%
   select(state, percentage)
+
+percentage_dem[is.na(percentage_dem)] <- 0
   
 percentage_dem
 ```
@@ -123,6 +125,8 @@ percentage_rep <- total_rep %>%
   left_join(win_rep, by = "state") %>%
   mutate(percentage = winners*100/N) %>%
   select(state, percentage)
+
+percentage_rep[is.na(percentage_rep)] <- 0
   
 percentage_rep
 ```
@@ -135,6 +139,8 @@ percentage_parties <- percentage_dem %>%
   select(state, Dem, Rep)
 
 list2env(percentage_parties, envir = .GlobalEnv)
+
+percentage_parties
 ```
 
 Making a scatterplot that compares dem to rep
