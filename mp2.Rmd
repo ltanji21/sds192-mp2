@@ -133,8 +133,15 @@ percentage_parties <- percentage_dem %>%
 
 percentage_parties
 ```
-
-
+Updating column names
+```{r}
+rename(percentage_parties, Dem = percentage.x,
+       Rep = percentage.y)
+```
+Making a scatterplot that compares dem to rep
+```{r}
+ggplot(percentage_parties, aes(y = Rep, x = Dem)) + geom_point() + geom_text(label = state)
+```
 
 
 
