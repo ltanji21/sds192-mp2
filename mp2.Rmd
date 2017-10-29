@@ -29,56 +29,110 @@ library(ggplot2)
 tbl_df(house_elections)
 ```
 
-#Democrat + Republican Incumbents
-What percent democrat incumbents won their elections?
+#How many incumbents won their elections? saving this information for both parties as a dataframe.
 ```{r}
 parties <- c("D", "R")
 
-incumbs<- function(party_arg) {
+win_incumbs<- function(party_arg) {
 house_elections %>%
-  filter(incumbent == "TRUE" &  party == party_arg) %>%
-  summarise(winners = sum(ge_winner == "W"), 
-            total_incumbents = n(),
-            percent_incumb= winners *100/total_incumbents) 
+  filter(incumbent == "TRUE" & party == party_arg) %>%
+  group_by(state) %>%
+  summarise(winners = sum(ge_winner == "W"))
 }
 
-lapply(parties, incumbs)
+wins <- lapply(parties, win_incumbs)
+
+names(wins) <- c("win_dem", "win_rep")
+list2env(wins, envir = .GlobalEnv)
 ```
 
-Checking the 'total_incumbs' numbers from 'incumbs'. Should be 169 and 224. 
+#How many candidates were running for each party?
 ```{r}
-total_incumbs <- function(party_arg) {
+total_candidates <- function(party_arg) {
   house_elections %>%
-  filter(incumbent == "TRUE" & party == party_arg) %>%
-  group_by(candidate_name) %>%
-  select(candidate_name, incumbent, party)
+  filter(party == party_arg) %>%
+  group_by(state) %>%
+  summarise(N = n()) %>%
+  data.frame()
 }
 
-lapply(parties, total_incumbs)
+total <- lapply(parties, total_candidates)
+
+names(total) <- c("total_dem", "total_rep")
+list2env(total, envir = .GlobalEnv)
+
+tbl_df(total_dem)
+tbl_df(total_rep)
+```
+
+Checking the 'total_incumbs' numbers from 'incumbs'. Should be 794 and 925. 
+```{r}
+total1 <- total_dem %>%
+  summarise(SUM = sum(N))
+total1
+
+total2 <- total_rep %>%
+  summarise(SUM = sum(N))
+total2
+
+total3 <- function(party_arg) {
+  house_elections %>%
+  filter(party == party_arg) %>%
+  group_by(state) %>%
+  select(state, party)
+}
+
+lapply(parties, total3)
 ```
 
 Checking the 'winners_incumb' numbers from 'incumbs'. Should be 152 and 199.
 ```{r}
-winners_incumbs <- function(party_arg) {
+winners_incumbs1 <- win_dem %>%
+  summarise(SUM= sum(winners))
+winners_incumbs1
+
+winners_incumbs2 <- win_rep %>%
+  summarise(SUM = sum(winners))
+winners_incumbs2
+
+winners_incumbs3 <- function(party_arg) {
   house_elections %>%
   filter(incumbent == "TRUE" &  party == party_arg & ge_winner == "W") %>%
-  group_by(candidate_name) %>%
-  select(candidate_name, incumbent, ge_winner, party)
+  group_by(state) %>%
+  select(state, incumbent, ge_winner, party)
 }
 
-lapply(parties, winners_incumbs)
+lapply(parties, winners_incumbs3)
 ```
 
+#Percentage of winners. 
+Calculating percentage of incumbent democratic winners to total democratic candidates. 
+```{r}
+percentage_dem <- total_dem %>%
+  left_join(win_dem, by = "state") %>%
+  mutate(percentage = winners*100/N) %>%
+  select(state, percentage)
+  
+percentage_dem
+```
 
+Calculating percentage of incumbent republican winners to total republican candidates
+```{r}
+percentage_rep <- total_rep %>%
+  left_join(win_rep, by = "state") %>%
+  mutate(percentage = winners*100/N) %>%
+  select(state, percentage)
+  
+percentage_rep
+```
 
+Combining republican percentage data to democratic data by state
+```{r}
+percentage_parties <- percentage_dem %>%
+  inner_join(percentage_rep, by = "state")
 
-
-
-
-
-
-
-
+percentage_parties
+```
 
 
 
