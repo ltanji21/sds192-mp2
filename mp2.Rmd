@@ -23,120 +23,55 @@ load("contributions.rda")
 ```{r}
 library(dplyr)
 library(ggplot2)
-library(maps)
-library(fiftystater)
-library(mapproj)
-```
-
-Donors per state.
-```{r}
-donors_per_state <- individuals %>%
-  group_by(state) %>%
-  summarise(donor_no = sum(n())) %>%
-  filter(donor_no >= 50, state != "ZZ") %>%
-  select(state, donor_no)
-
-dim(donors_per_state)
-donors_per_state
-```
-
-Number of donors in particular occupation
-```{r}
-occupations_people <- individuals %>%
-  group_by(state) %>%
-  summarise(people_no = n()) %>%
-  filter(people_no >= 50, state != "ZZ") %>%
-  select(contains("YOGA"), state, people_no)
-  
-occupations_people
-```
-
-
-total Yoga Instructor donations by state.
-```{r}
-occupations_donation <- individuals %>%
-  group_by(state) %>%
-  summarise(total_donation = sum(transaction_amt)) %>%
-  filter(total_donation > 1000, !is.na(state)) %>%
-  select(contains("YOGA"), state, total_donation)
-
-occupations_donation
-```
-
-Joining the tables 'occupations_people' and `occupations_donation' and table was mutated table to get the average sum of money per person in that state in a specific occupation.
-```{r}
-donations_occupation <- occupations_people %>%
-  left_join(occupations_donation, by = "state") %>%
-  mutate(average_donation = total_donation/people_no) %>%
-  select(state, average_donation)
-
-donations_occupation
-```
-
-Testing out Map
-```{r}
-donations_occupation <- data.frame(state = tolower(rownames(individuals)), individuals)
 ```
 
 ```{r}
-yoga_map <- ggplot(donations_occupation, aes(map_id = state)) + 
-  geom_map(aes(fill = average_donation), map = fifty_states) +
-  expand_limits(x = fifty_states$long, y = fifty_states$lat) +
-  coord_map() +
-  scale_x_continuous(breaks = NULL) +
-  scale_y_continuous(breaks = NULL) +
-  labs(x = "", y = "") +
-  theme(legend.position = "bottom", panel.background = element_blank()) +
-  fifty_states_inset_boxes()
-
-yoga_map
-
+tbl_df(house_elections)
 ```
 
-Make everything into a function! Start with 'occupations_people'. 
+#Democrat + Republican Incumbents
+What percent democrat incumbents won their elections?
 ```{r}
-job_names2 <- c("YOGA", "SOCIAL WORKER", "DOCTOR", "PHYSICIAN", "LAWYER", "ATTORNEY")
+parties <- c("D", "R")
 
-occupations_people2 <- function(job_arg) {
-  individuals %>%
-  group_by(state) %>%
-  summarise(people_no = n()) %>%
-  filter(people_no >= 50, state != "ZZ") %>%
-  select(contains(job_arg), state, people_no)
-}
-  
-lapply(job_names2, FUN = occupations_people2)
-```
-
-
-Making 'occupations_donation' into a function. 
-```{r}
-occupations_donation2 <- function(job_arg) {
-  individuals %>%
-  group_by(state) %>%
-  summarise(total_donation2 = sum(transaction_amt)) %>%
-  filter(total_donation2 > 1000, !is.na(state)) %>%
-  select(contains(job_arg), state, total_donation2)
+incumbs<- function(party_arg) {
+house_elections %>%
+  filter(incumbent == "TRUE" &  party == party_arg) %>%
+  summarise(winners = sum(ge_winner == "W"), 
+            total_incumbents = n(),
+            percent_incumb= winners *100/total_incumbents) 
 }
 
-lapply(job_names2, FUN = occupations_donation2)
-
-occupations_donation2
+lapply(parties, incumbs)
 ```
 
-
-Now making 'donations_occupation' into a function. 
+Checking the 'total_dem' numbers from 'incumb_dem'. Should be 169. 
 ```{r}
-donations_occupation2 <- function() {
-  occupations_people %>%
-  left_join(occupations_donation2, by = "state") %>%
-  mutate(average_donation2 = total_donation/people_no) %>%
-  select(state, average_donation2)
+total_incumbs <- function(party_arg) {
+  house_elections %>%
+  filter(incumbent == "TRUE" & party == party_arg) %>%
+  group_by(candidate_name) %>%
+  select(candidate_name, incumbent, party)
 }
 
-donations_occupation
-
+lapply(parties, total_incumbs)
 ```
+
+Checking the 'winners_dem' numbers from 'incumb_dem'. Should be 152.
+```{r}
+winners_incumbs <- function(party_arg) {
+  house_elections %>%
+  filter(incumbent == "TRUE" &  party == party_arg & ge_winner == "W") %>%
+  group_by(candidate_name) %>%
+  select(candidate_name, incumbent, ge_winner, party)
+}
+
+lapply(parties, winners_incumbs)
+```
+
+
+
+
 
 
 
