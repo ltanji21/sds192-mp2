@@ -29,7 +29,8 @@ library(ggplot2)
 tbl_df(house_elections)
 ```
 
-#How many incumbents won their elections? saving this information for both parties as a dataframe.
+#How many incumbents won their elections? 
+Saving this information for both parties as a dataframe.
 ```{r}
 parties <- c("D", "R")
 

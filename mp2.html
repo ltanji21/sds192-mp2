@@ -127,6 +127,404 @@ $(document).ready(function () {
 <div id="loading-the-data" class="section level2">
 <h2>Loading the data</h2>
 <p>This project is so interesting and relevant to my life!</p>
+<p>I hope we can make this work</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>88b9ae9dda3e5db8b100c34ac26bccfcc4f30449</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: 'dplyr'</code></pre>
+<pre><code>## The following objects are masked from 'package:stats':
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(ggplot2)</code></pre>
+<pre class="r"><code>tbl_df(house_elections)</code></pre>
+<pre><code>## # A tibble: 2,178 x 10
+##       fec_id state district incumbent   candidate_name party primary_votes
+##        &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;            &lt;chr&gt; &lt;chr&gt;         &lt;int&gt;
+##  1 B2CA08156    CA       08     FALSE Mitzelfelt, Brad     R          8801
+##  2 H0AK00097    AK       00     FALSE     Cox, John R.     R         11179
+##  3 H0AL01030    AL       01     FALSE  Gounares, Peter     R          3854
+##  4 H0AL02087    AL       02      TRUE     Roby, Martha     R             0
+##  5 H0AL05163    AL       05      TRUE       Brooks, Mo     R         65163
+##  6 H0AL07086    AL       07      TRUE Sewell, Terri A.     D             0
+##  7 H0AL07177    AL       07     FALSE Chamberlain, Don     R         11537
+##  8 H0AR01083    AR       01      TRUE  Crawford, Rick      R             0
+##  9 H0AR02107    AR       02      TRUE    Griffin, Tim      R             0
+## 10 H0AR03055    AR       03      TRUE    Womack, Steve     R             0
+## # ... with 2,168 more rows, and 3 more variables: runoff_votes &lt;int&gt;,
+## #   general_votes &lt;int&gt;, ge_winner &lt;chr&gt;</code></pre>
+</div>
+<div id="how-many-incumbents-won-their-elections" class="section level1">
+<h1>How many incumbents won their elections?</h1>
+<p>Saving this information for both parties as a dataframe.</p>
+<pre class="r"><code>parties &lt;- c(&quot;D&quot;, &quot;R&quot;)
+
+win_incumbs&lt;- function(party_arg) {
+house_elections %&gt;%
+  filter(incumbent == &quot;TRUE&quot; &amp; party == party_arg) %&gt;%
+  group_by(state) %&gt;%
+  summarise(winners = sum(ge_winner == &quot;W&quot;))
+}
+
+wins &lt;- lapply(parties, win_incumbs)
+
+names(wins) &lt;- c(&quot;win_dem&quot;, &quot;win_rep&quot;)
+list2env(wins, envir = .GlobalEnv)</code></pre>
+<pre><code>## &lt;environment: R_GlobalEnv&gt;</code></pre>
+</div>
+<div id="how-many-candidates-were-running-for-each-party" class="section level1">
+<h1>How many candidates were running for each party?</h1>
+<pre class="r"><code>total_candidates &lt;- function(party_arg) {
+  house_elections %&gt;%
+  filter(party == party_arg) %&gt;%
+  group_by(state) %&gt;%
+  summarise(N = n()) %&gt;%
+  data.frame()
+}
+
+total &lt;- lapply(parties, total_candidates)
+
+names(total) &lt;- c(&quot;total_dem&quot;, &quot;total_rep&quot;)
+list2env(total, envir = .GlobalEnv)</code></pre>
+<pre><code>## &lt;environment: R_GlobalEnv&gt;</code></pre>
+<pre class="r"><code>tbl_df(total_dem)</code></pre>
+<pre><code>## # A tibble: 54 x 2
+##    state     N
+##    &lt;chr&gt; &lt;int&gt;
+##  1    AK     5
+##  2    AL     8
+##  3    AR     8
+##  4    AS     2
+##  5    AZ    18
+##  6    CA   105
+##  7    CO     6
+##  8    CT     4
+##  9    DC     2
+## 10    DE     1
+## # ... with 44 more rows</code></pre>
+<pre class="r"><code>tbl_df(total_rep)</code></pre>
+<pre><code>## # A tibble: 53 x 2
+##    state     N
+##    &lt;chr&gt; &lt;int&gt;
+##  1    AK     3
+##  2    AL    15
+##  3    AR     6
+##  4    AZ    24
+##  5    CA    97
+##  6    CO    10
+##  7    CT    17
+##  8    DE     2
+##  9    FL    53
+## 10    GA    28
+## # ... with 43 more rows</code></pre>
+<p>Checking the ‘total_incumbs’ numbers from ‘incumbs’. Should be 794 and 925.</p>
+<pre class="r"><code>total1 &lt;- total_dem %&gt;%
+  summarise(SUM = sum(N))
+total1</code></pre>
+<pre><code>##   SUM
+## 1 794</code></pre>
+<pre class="r"><code>total2 &lt;- total_rep %&gt;%
+  summarise(SUM = sum(N))
+total2</code></pre>
+<pre><code>##   SUM
+## 1 925</code></pre>
+<pre class="r"><code>total3 &lt;- function(party_arg) {
+  house_elections %&gt;%
+  filter(party == party_arg) %&gt;%
+  group_by(state) %&gt;%
+  select(state, party)
+}
+
+lapply(parties, total3)</code></pre>
+<pre><code>## [[1]]
+## # A tibble: 794 x 2
+## # Groups:   state [54]
+##    state party
+##    &lt;chr&gt; &lt;chr&gt;
+##  1    AL     D
+##  2    AS     D
+##  3    AZ     D
+##  4    CA     D
+##  5    CA     D
+##  6    CA     D
+##  7    CA     D
+##  8    CA     D
+##  9    CA     D
+## 10    CA     D
+## # ... with 784 more rows
+## 
+## [[2]]
+## # A tibble: 925 x 2
+## # Groups:   state [53]
+##    state party
+##    &lt;chr&gt; &lt;chr&gt;
+##  1    CA     R
+##  2    AK     R
+##  3    AL     R
+##  4    AL     R
+##  5    AL     R
+##  6    AL     R
+##  7    AR     R
+##  8    AR     R
+##  9    AR     R
+## 10    AR     R
+## # ... with 915 more rows</code></pre>
+<p>Checking the ‘winners_incumb’ numbers from ‘incumbs’. Should be 152 and 199.</p>
+<pre class="r"><code>winners_incumbs1 &lt;- win_dem %&gt;%
+  summarise(SUM= sum(winners))
+winners_incumbs1</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##     SUM
+##   &lt;int&gt;
+## 1   152</code></pre>
+<pre class="r"><code>winners_incumbs2 &lt;- win_rep %&gt;%
+  summarise(SUM = sum(winners))
+winners_incumbs2</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##     SUM
+##   &lt;int&gt;
+## 1   199</code></pre>
+<pre class="r"><code>winners_incumbs3 &lt;- function(party_arg) {
+  house_elections %&gt;%
+  filter(incumbent == &quot;TRUE&quot; &amp;  party == party_arg &amp; ge_winner == &quot;W&quot;) %&gt;%
+  group_by(state) %&gt;%
+  select(state, incumbent, ge_winner, party)
+}
+
+lapply(parties, winners_incumbs3)</code></pre>
+<pre><code>## [[1]]
+## # A tibble: 152 x 4
+## # Groups:   state [41]
+##    state incumbent ge_winner party
+##    &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;
+##  1    AL      TRUE         W     D
+##  2    AS      TRUE         W     D
+##  3    CA      TRUE         W     D
+##  4    CA      TRUE         W     D
+##  5    CA      TRUE         W     D
+##  6    CA      TRUE         W     D
+##  7    CA      TRUE         W     D
+##  8    CA      TRUE         W     D
+##  9    DC      TRUE         W     D
+## 10    DE      TRUE         W     D
+## # ... with 142 more rows
+## 
+## [[2]]
+## # A tibble: 199 x 4
+## # Groups:   state [40]
+##    state incumbent ge_winner party
+##    &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;
+##  1    AL      TRUE         W     R
+##  2    AL      TRUE         W     R
+##  3    AR      TRUE         W     R
+##  4    AR      TRUE         W     R
+##  5    AR      TRUE         W     R
+##  6    AZ      TRUE         W     R
+##  7    CA      TRUE         W     R
+##  8    CA      TRUE         W     R
+##  9    CO      TRUE         W     R
+## 10    FL      TRUE         W     R
+## # ... with 189 more rows</code></pre>
+</div>
+<div id="percentage-of-winners." class="section level1">
+<h1>Percentage of winners.</h1>
+<p>Calculating percentage of incumbent democratic winners to total democratic candidates.</p>
+<pre class="r"><code>percentage_dem &lt;- total_dem %&gt;%
+  left_join(win_dem, by = &quot;state&quot;) %&gt;%
+  mutate(percentage = winners*100/N) %&gt;%
+  select(state, percentage)
+  
+percentage_dem</code></pre>
+<pre><code>##    state percentage
+## 1     AK         NA
+## 2     AL  12.500000
+## 3     AR         NA
+## 4     AS  50.000000
+## 5     AZ  16.666667
+## 6     CA  25.714286
+## 7     CO  50.000000
+## 8     CT         NA
+## 9     DC  50.000000
+## 10    DE 100.000000
+## 11    FL  16.666667
+## 12    GA  31.250000
+## 13    GU  50.000000
+## 14    HI  12.500000
+## 15    IA  40.000000
+## 16    ID         NA
+## 17    IL  16.279070
+## 18    IN   6.666667
+## 19    KS         NA
+## 20    KY  10.000000
+## 21    LA  25.000000
+## 22    MA  53.333333
+## 23    MD  31.578947
+## 24    ME 100.000000
+## 25    MI  14.814815
+## 26    MN  28.571429
+## 27    MO  12.500000
+## 28    MS  14.285714
+## 29    MT         NA
+## 30    NC  16.666667
+## 31    ND         NA
+## 32    NE         NA
+## 33    NH         NA
+## 34    NJ  20.833333
+## 35    NM  20.000000
+## 36    NV         NA
+## 37    NY  35.416667
+## 38    OH   9.375000
+## 39    OK         NA
+## 40    OR  57.142857
+## 41    PA  17.391304
+## 42    RI  40.000000
+## 43    SC   8.333333
+## 44    SD         NA
+## 45    TN  16.666667
+## 46    TX   9.090909
+## 47    UT  12.500000
+## 48    VA  23.076923
+## 49    VI  50.000000
+## 50    VT 100.000000
+## 51    WA  12.000000
+## 52    WI  18.181818
+## 53    WV  20.000000
+## 54    WY         NA</code></pre>
+<p>Calculating percentage of incumbent republican winners to total republican candidates</p>
+<pre class="r"><code>percentage_rep &lt;- total_rep %&gt;%
+  left_join(win_rep, by = &quot;state&quot;) %&gt;%
+  mutate(percentage = winners*100/N) %&gt;%
+  select(state, percentage)
+  
+percentage_rep</code></pre>
+<pre><code>##    state percentage
+## 1     AK  33.333333
+## 2     AL  40.000000
+## 3     AR  50.000000
+## 4     AZ  12.500000
+## 5     CA  12.371134
+## 6     CO  40.000000
+## 7     CT         NA
+## 8     DE         NA
+## 9     FL  26.415094
+## 10    GA  28.571429
+## 11    GU         NA
+## 12    HI         NA
+## 13    IA  33.333333
+## 14    ID  50.000000
+## 15    IL  17.857143
+## 16    IN  12.500000
+## 17    KS 100.000000
+## 18    KY  21.428571
+## 19    LA  50.000000
+## 20    MA         NA
+## 21    MD   3.225806
+## 22    ME         NA
+## 23    MI  32.000000
+## 24    MN  21.428571
+## 25    MO  23.809524
+## 26    MP         NA
+## 27    MS  23.076923
+## 28    MT         NA
+## 29    NC  10.638298
+## 30    ND         NA
+## 31    NE  30.000000
+## 32    NH   0.000000
+## 33    NJ  26.086957
+## 34    NM  25.000000
+## 35    NV  11.764706
+## 36    NY  15.625000
+## 37    OH  34.482759
+## 38    OK  23.076923
+## 39    OR  12.500000
+## 40    PA  44.000000
+## 41    RI         NA
+## 42    SC  33.333333
+## 43    SD 100.000000
+## 44    TN  29.166667
+## 45    TX  21.428571
+## 46    UT   9.090909
+## 47    VA  53.333333
+## 48    VI         NA
+## 49    VT         NA
+## 50    WA  17.391304
+## 51    WI  55.555556
+## 52    WV  28.571429
+## 53    WY 100.000000</code></pre>
+<p>Combining republican percentage data to democratic data by state.</p>
+<pre class="r"><code>percentage_parties &lt;- percentage_dem %&gt;%
+  inner_join(percentage_rep, by = &quot;state&quot;)
+
+percentage_parties</code></pre>
+<pre><code>##    state percentage.x percentage.y
+## 1     AK           NA    33.333333
+## 2     AL    12.500000    40.000000
+## 3     AR           NA    50.000000
+## 4     AZ    16.666667    12.500000
+## 5     CA    25.714286    12.371134
+## 6     CO    50.000000    40.000000
+## 7     CT           NA           NA
+## 8     DE   100.000000           NA
+## 9     FL    16.666667    26.415094
+## 10    GA    31.250000    28.571429
+## 11    GU    50.000000           NA
+## 12    HI    12.500000           NA
+## 13    IA    40.000000    33.333333
+## 14    ID           NA    50.000000
+## 15    IL    16.279070    17.857143
+## 16    IN     6.666667    12.500000
+## 17    KS           NA   100.000000
+## 18    KY    10.000000    21.428571
+## 19    LA    25.000000    50.000000
+## 20    MA    53.333333           NA
+## 21    MD    31.578947     3.225806
+## 22    ME   100.000000           NA
+## 23    MI    14.814815    32.000000
+## 24    MN    28.571429    21.428571
+## 25    MO    12.500000    23.809524
+## 26    MS    14.285714    23.076923
+## 27    MT           NA           NA
+## 28    NC    16.666667    10.638298
+## 29    ND           NA           NA
+## 30    NE           NA    30.000000
+## 31    NH           NA     0.000000
+## 32    NJ    20.833333    26.086957
+## 33    NM    20.000000    25.000000
+## 34    NV           NA    11.764706
+## 35    NY    35.416667    15.625000
+## 36    OH     9.375000    34.482759
+## 37    OK           NA    23.076923
+## 38    OR    57.142857    12.500000
+## 39    PA    17.391304    44.000000
+## 40    RI    40.000000           NA
+## 41    SC     8.333333    33.333333
+## 42    SD           NA   100.000000
+## 43    TN    16.666667    29.166667
+## 44    TX     9.090909    21.428571
+## 45    UT    12.500000     9.090909
+## 46    VA    23.076923    53.333333
+## 47    VI    50.000000           NA
+## 48    VT   100.000000           NA
+## 49    WA    12.000000    17.391304
+## 50    WI    18.181818    55.555556
+## 51    WV    20.000000    28.571429
+## 52    WY           NA   100.000000</code></pre>
 </div>
 
 
