@@ -45,7 +45,7 @@ house_elections %>%
 lapply(parties, incumbs)
 ```
 
-Checking the 'total_dem' numbers from 'incumb_dem'. Should be 169. 
+Checking the 'total_incumbs' numbers from 'incumbs'. Should be 169 and 224. 
 ```{r}
 total_incumbs <- function(party_arg) {
   house_elections %>%
@@ -57,7 +57,7 @@ total_incumbs <- function(party_arg) {
 lapply(parties, total_incumbs)
 ```
 
-Checking the 'winners_dem' numbers from 'incumb_dem'. Should be 152.
+Checking the 'winners_incumb' numbers from 'incumbs'. Should be 152 and 199.
 ```{r}
 winners_incumbs <- function(party_arg) {
   house_elections %>%
