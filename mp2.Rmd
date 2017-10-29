@@ -129,18 +129,19 @@ percentage_rep
 Combining republican percentage data to democratic data by state.
 ```{r}
 percentage_parties <- percentage_dem %>%
-  inner_join(percentage_rep, by = "state")
+  inner_join(percentage_rep, by = "state") %>%
+  rename(Dem = percentage.x,
+       Rep = percentage.y) %>%
+  select(state, Dem, Rep)
 
-percentage_parties
+list2env(percentage_parties, envir = .GlobalEnv)
 ```
-Updating column names
-```{r}
-rename(percentage_parties, Dem = percentage.x,
-       Rep = percentage.y)
-```
+
 Making a scatterplot that compares dem to rep
 ```{r}
-ggplot(percentage_parties, aes(y = Rep, x = Dem)) + geom_point() + geom_text(label = state)
+ggplot(percentage_parties, aes(y = Rep, x = Dem)) + 
+  geom_text(label = state)
+
 ```
 
 
