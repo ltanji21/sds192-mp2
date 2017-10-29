@@ -125,14 +125,44 @@ percentage_rep <- total_rep %>%
   
 percentage_rep
 ```
-
-Combining republican percentage data to democratic data by state
+Combining republican percentage data to democratic data by state.
 ```{r}
 percentage_parties <- percentage_dem %>%
   inner_join(percentage_rep, by = "state")
 
 percentage_parties
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
