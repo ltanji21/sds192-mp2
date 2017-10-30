@@ -1,6 +1,6 @@
 ---
 title: "Mini-Project 2"
-author: "Leigh Tanji & Samantha Linder"
+author: "Leigh Tanji & Samantha Bryce"
 date: "October 31, 2017"
 output: html_document
 ---
@@ -146,10 +146,18 @@ percentage_parties
 Making a scatterplot that compares dem to rep
 ```{r}
 ggplot(percentage_parties, aes(y = Rep, x = Dem)) + 
-  geom_text(label = state)
-
+  geom_text(label = state, position = "jitter", aes(angle = 45)) + xlab("Democratic candidates") + ylab("Republican candidates") + labs(title = "Percentage of incumbant candidates reelected by political party")
 ```
 
+```{r}
+ggplot(percentage_parties, aes(y = 0, x = Dem)) + geom_point(position = "jitter", colour = "blue", shape = 1, size = 2) + xlab("Democratic candidates") + labs(title = "Percentage of Democratic incumbant candidates reelected") + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title.y = element_blank()) + scale_y_discrete(breaks=c("-0.1","0","0.1"))
+```
+
+```{r}
+ggplot(percentage_parties, aes(y = 0, x = Rep)) + geom_point(position = "jitter", colour = "red", shape = 1, size = 2) + xlab("Republican candidates") + labs(title = "Percentage of Republican incumbant candidates reelected") + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title.y = element_blank()) + scale_y_discrete(breaks=c("-0.1","0","0.1"))
+```
+
+Now let's put everything together
 
 
 
@@ -157,15 +165,30 @@ ggplot(percentage_parties, aes(y = Rep, x = Dem)) +
 
 
 
+**Incumbent Candidates by Party: Why does the candidate I hate keep getting reelected?**
+
+When you have a politician from the opposite party representing your state, it is easy to get annoyed when they continue to get reelected election after election. But do they actually get reelected more often than their peers from the opposite political party? Using data from the Federal Election Commission we explored whether or not incumbent candidates were more likely to get reelected in state elections based on which party they were running with.
+
+So are these incumbent candidates getting reelected more often if they belong to one of the two major political parties in the United States? The answer is that it depends but overwhelmingly no. There are some outlier states that overwhelmingly reelect incumbent candidates from the dominant party of the state. Examples include South Dakota where 100% of incumbent Republican candidates and Maine where 100% of incumbent Democratic candidates were reelected. However, these are exceptions not norms. If you look below at Figure 1, which compares the percentage of Democratic and Republican incumbent candidates reelected by state you see that overwhelmingly there is very little variance based on party.
 
 
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
+ggplot(percentage_parties, aes(y = Rep, x = Dem)) + 
+  geom_text(label = state, position = "jitter", aes(angle = 45)) + xlab("Democratic candidates") + ylab("Republican candidates") + labs(title = "Percentage of incumbant candidates reelected by political party")
+```
+Figure 1: A comparison of the percentage of incumbent Democratic and Republican candidates running in states that got reelected
 
+To better view this data we have also graphed the percentage of incumbent candidates that go reelected by party. In Figures 2 and 3 below, each point represents one state. When you compare the two figures you see that they are almost identical. Ultimately, in most cases it doesn’t really matter which party you are running with when it comes to incumbent candidates getting reelected.
 
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
+ggplot(percentage_parties, aes(y = 0, x = Dem)) + geom_point(position = "jitter", colour = "blue", shape = 1, size = 2) + xlab("Democratic candidates") + labs(title = "Percentage of Democratic incumbant candidates reelected") + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title.y = element_blank()) + scale_y_discrete(breaks=c("-0.1","0","0.1"))
+```
+Figure 2: The percentage of incumbent Democratic candidates reelected by states
 
-
-
-
-
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
+ggplot(percentage_parties, aes(y = 0, x = Rep)) + geom_point(position = "jitter", colour = "red", shape = 1, size = 2) + xlab("Republican candidates") + labs(title = "Percentage of Republican incumbant candidates reelected") + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title.y = element_blank()) + scale_y_discrete(breaks=c("-0.1","0","0.1"))
+```
+Figure 3: The percentage of incumbent Republican candidates reelected by states
 
 
 
