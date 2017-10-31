@@ -165,7 +165,6 @@ Rep_states <- percentage_parties %>%
   ggplot(aes(x = Percentage, y = state_no2)) +
   geom_bar(stat = "identity") 
   
-
 Rep_states
 ```
 
