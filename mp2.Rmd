@@ -143,6 +143,34 @@ list2env(percentage_parties, envir = .GlobalEnv)
 percentage_parties
 ```
 
+Number of democratic states that elected different percentages of incumbents.
+```{r}
+Dem_states <- percentage_parties %>%
+  group_by(Dem) %>%
+  summarise(state_no = n()) %>%
+  select(state_no, Dem) %>%
+  ggplot(aes(x = Dem, y = state_no)) +
+  geom_jitter(stat = "identity") + xlim(10,101) + ylim(0,4.1)
+  
+
+Dem_states
+
+```
+
+Number of Republican stats that elected different percenages of incumbents. 
+```{r}
+Rep_states <- percentage_parties %>%
+  group_by(Rep) %>%
+  summarise(state_no2 = n()) %>%
+  select(state_no2, Rep) %>%
+  ggplot(aes(x = Rep, y = state_no2)) +
+  geom_jitter(stat = "identity") + xlim(0,30) + ylim(0,3.1)
+  
+
+Rep_states
+```
+
+
 Making a scatterplot that compares dem to rep
 ```{r}
 ggplot(percentage_parties, aes(y = Rep, x = Dem)) + 
