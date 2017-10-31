@@ -139,56 +139,6 @@ list2env(percentage_parties, envir = .GlobalEnv)
 percentage_parties
 ```
 
-Number of democratic states that elected different percentages of incumbents.
-```{r, error=FALSE, echo=FALSE}
-Dem_states <- percentage_parties %>%
-  filter(Dem > 0) %>%
-  group_by(Percentage = cut(Dem, breaks = c(0.1, 20, 40, 60, 80, 100))) %>%
-  summarise(state_no2 = n()) %>%
-  ggplot(aes(x = Percentage, y = state_no2)) +
-  geom_bar(stat = "identity", fill = "blue") 
-  
-
-Dem_states + labs(title = "Percentage of Democratic incumbant candidates reelected by state") + xlab("Percentage of incumbant candidates reelected") + ylab("Number of states")
-```
-
-Number of Republican stats that elected different percenages of incumbents. 
-```{r, error=FALSE, echo=FALSE}
-Rep_states <- percentage_parties %>%
-  filter(Rep > 0) %>%
-  group_by(Percentage = cut(Rep, breaks = c(0.1, 20, 40, 60, 80, 100))) %>%
-  summarise(state_no2 = n()) %>%
-  ggplot(aes(x = Percentage, y = state_no2)) +
-  geom_bar(stat = "identity", fill = "red") 
-
-Rep_states
-
-Rep_states + labs(title = "Percentage of Republican incumbant candidates reelected by state") + xlab("Percentage of incumbant candidates reelected") + ylab("Number of states")
-
-```
-
-
-
-
-Making a scatterplot that compares dem to rep
-```{r}
-ggplot(percentage_parties, aes(y = Rep, x = Dem)) + 
-  geom_text(label = state, position = "jitter", aes(angle = 45)) + xlab("Democratic candidates") + ylab("Republican candidates") + labs(title = "Percentage of incumbant candidates reelected by political party")
-```
-
-```{r}
-ggplot(percentage_parties, aes(y = 0, x = Dem)) + geom_point(position = "jitter", colour = "blue", shape = 1, size = 2) + xlab("Democratic candidates") + labs(title = "Percentage of Democratic incumbant candidates reelected by state") + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title.y = element_blank()) + scale_y_discrete(breaks=c("-0.1","0","0.1"))
-```
-
-```{r}
-ggplot(percentage_parties, aes(y = 0, x = Rep)) + geom_point(position = "jitter", colour = "red", shape = 1, size = 2) + xlab("Republican candidates") + labs(title = "Percentage of Republican incumbant candidates reelected by state") + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title.y = element_blank()) + scale_y_discrete(breaks=c("-0.1","0","0.1"))
-```
-
-Now let's put everything together
-
-
-
-
 **Incumbent Candidates by Party: Why does the candidate I hate keep getting reelected?**
 
 When you have a politician from the opposite party representing your state, it is easy to get annoyed when they continue to get reelected election after election. But do they actually get reelected more often than their peers from the opposite political party? Using data from the Federal Election Commission we explored whether or not incumbent candidates were more likely to get reelected in state elections based on which party they were running with.
@@ -202,19 +152,8 @@ ggplot(percentage_parties, aes(y = Rep, x = Dem)) +
 ```
 Figure 1: A comparison of the percentage of incumbent Democratic and Republican candidates running in states that got reelected
 
-To better view this data we have also graphed the percentage of incumbent candidates that go reelected by party. In Figures 2 and 3 below, each point represents one state. When you compare the two figures you see that they are almost identical. Ultimately, in most cases it doesn’t really matter which party you are running with when it comes to incumbent candidates getting reelected.
 
-```{r, message=FALSE, echo=FALSE, warning=FALSE}
-ggplot(percentage_parties, aes(y = 0, x = Dem)) + geom_point(position = "jitter", colour = "blue", shape = 1, size = 2) + xlab("Democratic candidates") + labs(title = "Percentage of Democratic incumbant candidates reelected by state") + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title.y = element_blank()) + scale_y_discrete(breaks=c("-0.1","0","0.1"))
-```
-Figure 2: The percentage of incumbent Democratic candidates reelected by states
-
-```{r, message=FALSE, echo=FALSE, warning=FALSE}
-ggplot(percentage_parties, aes(y = 0, x = Rep)) + geom_point(position = "jitter", colour = "red", shape = 1, size = 2) + xlab("Republican candidates") + labs(title = "Percentage of Republican incumbant candidates reelected by state") + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title.y = element_blank()) + scale_y_discrete(breaks=c("-0.1","0","0.1"))
-```
-Figure 3: The percentage of incumbent Republican candidates reelected by states
-
-Finally, we present one more way of looking at this data. Using bar charts we chunk the data to make viewing it less overwhelming. These bar charts represent the 50 states with there being one data point per a state. By looking at the bar charts we are able to detect the subtle differences between the data, specifically that the Republican party seems to have more states reelecting more than 20% of their incumbent candidates than the Democratic party.
+Using bar charts we chunk the data to make viewing it less overwhelming. These bar charts represent the 50 states with there being one data point per a state. By looking at the bar charts we are able to detect the subtle differences between the data, specifically that the Republican party seems to have more states reelecting more than 20% of their incumbent candidates than the Democratic party.
 
 ```{r, message=FALSE, echo=FALSE, warning=FALSE}
 Dem_states <- percentage_parties %>%
@@ -227,7 +166,7 @@ Dem_states <- percentage_parties %>%
 
 Dem_states + labs(title = "Percentage of Democratic incumbant candidates reelected by state") + xlab("Percentage of incumbant candidates reelected") + ylab("Number of states")
 ```
-Figure 4: The distribution of percentages of Democratic incumbent candidates being reelected by state
+Figure 2: The distribution of percentages of Democratic incumbent candidates being reelected by state
 
 ```{r, message=FALSE, echo=FALSE, warning=FALSE}
 Rep_states <- percentage_parties %>%
@@ -240,7 +179,7 @@ Rep_states <- percentage_parties %>%
 
 Rep_states + labs(title = "Percentage of Republican incumbant candidates reelected by state") + xlab("Percentage of incumbant candidates reelected") + ylab("Number of states")
 ```
-Figure 5: The distribution of percentages of Republican incumbent candidates being reelected by state
+Figure 3: The distribution of percentages of Republican incumbent candidates being reelected by state
 
 
 
