@@ -15,7 +15,7 @@ load("committees.rda")
 load("contributions.rda")
 ```
 
-```{r}
+```{r, message=FALSE}
 library(dplyr)
 library(ggplot2)
 ```
@@ -26,7 +26,7 @@ tbl_df(house_elections)
 
 #How many incumbents won their elections? 
 Saving this information for both parties as a dataframe.
-```{r}
+```{r, message=FALSE}
 parties <- c("D", "R")
 
 win_incumbs<- function(party_arg) {
@@ -62,7 +62,7 @@ tbl_df(total_rep)
 ```
 
 Checking the 'total_incumbs' numbers from 'incumbs'. Should be 794 and 925. 
-```{r}
+```{r, message=FALSE}
 total1 <- total_dem %>%
   summarise(SUM = sum(N))
 total1
@@ -126,7 +126,7 @@ percentage_rep[is.na(percentage_rep)] <- 0
 percentage_rep
 ```
 Combining republican percentage data to democratic data by state.
-```{r}
+```{r, message=FALSE}
 percentage_parties <- percentage_dem %>%
   inner_join(percentage_rep, by = "state") %>%
   rename(Dem = percentage.x,
@@ -140,9 +140,9 @@ percentage_parties
 
 **Incumbent Candidates by Party: Why does the candidate I hate keep getting reelected?**
 
-When you have a politician from the opposite party representing your state, it is easy to get annoyed when they continue to get reelected election after election. But do they actually get reelected more often than their peers from the opposite political party? Using data from the Federal Election Commission we explored whether or not incumbent candidates were more likely to get reelected in state elections based on which party they were running with.
+When you have a politician from the opposite party representing your state, it is easy to get annoyed when they continue to get reelected election after election. But do they actually get reelected more often than their peers from the opposite political party? Using data from the Federal Election Commission we explored whether or not incumbent candidates were more likely to get reelected in state elections based on their party.
 
-So are these incumbent candidates getting reelected more often if they belong to one of the two major political parties in the United States? The answer is that it depends but overwhelmingly no. There are some outlier states that overwhelmingly reelect incumbent candidates from the dominant party of the state. Examples include South Dakota where 100% of incumbent Republican candidates and Maine where 100% of incumbent Democratic candidates were reelected. However, these are exceptions not norms. If you look below at Figure 1, which compares the percentage of Democratic and Republican incumbent candidates reelected by state you see that overwhelmingly there is very little variance based on party.
+Overall, incumbancy does not seem to contribute to the reelection of candidates, no matter their party. There are some outlier states that overwhelmingly reelect incumbent candidates from the dominant party of the state. Examples include South Dakota where 100% of incumbent Republican candidates and Maine where 100% of incumbent Democratic candidates were reelected. However, these are exceptions not norms. If you look below at Figure 1, which compares the percentage of Democratic and Republican incumbent candidates reelected by state you see that overwhelmingly there is very little variance based on party.
 
 
 ```{r, message=FALSE, echo=FALSE, warning=FALSE}
@@ -152,7 +152,7 @@ ggplot(percentage_parties, aes(y = Rep, x = Dem)) +
 Figure 1: A comparison of the percentage of incumbent Democratic and Republican candidates running in states that got reelected
 
 
-Using bar charts we chunk the data to make viewing it less overwhelming. These bar charts represent the 50 states with there being one data point per a state. By looking at the bar charts we are able to detect the subtle differences between the data, specifically that the Republican party seems to have more states reelecting more than 20% of their incumbent candidates than the Democratic party.
+Using bar charts we chunk the data to make viewing it less overwhelming. These bar charts depicts the number of states that elected an incumbent candidate by percentage of incumbent candidates elected. By looking at the bar charts we are able to detect the subtle differences between the data, specifically that the Republican party seems to have more states reelecting more than 20% of their incumbent candidates than the Democratic party.
 
 ```{r, message=FALSE, echo=FALSE, warning=FALSE}
 Dem_states <- percentage_parties %>%
