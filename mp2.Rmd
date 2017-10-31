@@ -160,13 +160,11 @@ Rep_states <- percentage_parties %>%
   summarise(state_no2 = n()) %>%
   ggplot(aes(x = Percentage, y = state_no2)) +
   geom_bar(stat = "identity", fill = "red") 
-  
-<<<<<<< HEAD
+
 Rep_states
-=======
 
 Rep_states + labs(title = "Percentage of Republican incumbant candidates reelected by state") + xlab("Percentage of incumbant candidates reelected") + ylab("Number of states")
->>>>>>> 46a55770ff989ab7e2ad7e9766a214e63de1da27
+
 ```
 
 
